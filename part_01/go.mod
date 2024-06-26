@@ -1,3 +1,3 @@
-module github.com/XanderV-2158642/InterpreterInGo/part_01
+module monkey
 
 go 1.22.4

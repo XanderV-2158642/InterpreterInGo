@@ -124,7 +124,7 @@ func TestIntegerLiteralExpression (t *testing.T) {
 
 	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
 	if !ok {
-		t.Fatalf("program.Statements[0] is not ast.ReturnStatement. got=%T", program.Statements[0])
+		t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T", program.Statements[0])
 	}
 
 	literal, ok := stmt.Expression.(*ast.IntegerLiteral)
@@ -382,4 +382,35 @@ func testInfixExpression (t *testing.T, exp ast.Expression, left interface{}, op
 	if !testLiteralExpression(t, opExp.Right, right) { return false }
 
 	return true
+}
+
+func TestBooleanExpression(t *testing.T) {
+	input :=`true;`
+
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("program should contain %d statements. got=%d", 1, len(program.Statements))
+	}
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("program.Statements[0] is not ast.Boolean. got=%T", program.Statements[0])
+	}
+
+	ident, ok := stmt.Expression.(*ast.Boolean)
+	if !ok {
+		t.Fatalf("exp not *ast.Identifier. got=%T", stmt.Expression)
+	}
+	
+	if ident.Value != true {
+		t.Errorf("ident.Value not %t. got=%t", true, ident.Value)
+	}
+
+	if ident.TokenLiteral() != "true" {
+		t.Errorf("ident.TokenLiteral not %s. got=%s", "true", ident.TokenLiteral())
+	}
 }
